@@ -1,0 +1,46 @@
+env: "local"
+log_level: "debug"
+services:
+  auth:
+    grpc:
+      port: 20202
+      timeout: 10h
+    token_ttl: 1h
+  user:
+    grpc:
+      port: 20203
+      timeout: 10h
+  chat:
+    grpc:
+      port: 20204
+      timeout: 10h
+  frontend:
+    grpc:
+      port: 20205
+      timeout: 10h
+    ws_port: 20206
+    ws_base_path: "/ws"
+    send_buff_size: 128
+    read_buff_size: 4096
+    write_buff_size: 4096
+    hs_timeout: 30s
+    msg_limit: 4096
+    write_wait: 5s
+    pong_wait: 5s
+clients:
+  auth:
+    address: "localhost:20202"
+    timeout: 1h
+    retries_count: 3
+  user:
+    address: "localhost:20203"
+    timeout: 1h
+    retries_count: 3
+  chat:
+    address: "localhost:20204"
+    timeout: 1h
+    retries_count: 3
+  frontend:
+    address: "localhost:20205"
+    timeout: 1h
+    retries_count: 3

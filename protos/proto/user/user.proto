@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package user;
+
+import "protocol/protocol.proto";
+
+option go_package = "dvid.user.v1;userv1";
+
+service UserService {
+  rpc Create (CreateRequest) returns (CreateResponse);
+  rpc User (UserRequest) returns (UserResponse);
+  rpc Users (UsersRequest) returns (UsersResponse);
+}
+
+message CreateRequest {
+  string email = 1;
+  string bio = 2;
+}
+
+message CreateResponse {
+  protocol.User user = 1;
+}
+
+message UserRequest {
+  bytes uid = 1;
+}
+
+message UserResponse {
+  protocol.User user = 1;
+}
+
+message UsersRequest {
+}
+
+message UsersResponse {
+  repeated protocol.User users = 1;
+}

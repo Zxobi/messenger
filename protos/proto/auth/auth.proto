@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package auth;
+
+option go_package = "dvid.auth.v1;authv1";
+
+service AuthService {
+  rpc Register (RegisterRequest) returns (RegisterResponse);
+  rpc Login (LoginRequest) returns (LoginResponse);
+}
+
+message RegisterRequest {
+  bytes uid = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message RegisterResponse {
+  bytes uid = 1;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string token = 1;
+}

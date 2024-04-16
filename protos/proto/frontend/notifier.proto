@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package frontend;
+
+import "protocol/protocol.proto";
+
+option go_package = "dvid.frontend.v1;frontendv1";
+
+service Notifier {
+  rpc NewMessage (NewMessageRequest) returns (NewMessageResponse);
+  rpc NewChat (NewChatRequest) returns (NewChatResponse);
+}
+
+message NewMessageRequest {
+  protocol.ChatMessage message = 1;
+}
+
+message NewMessageResponse {
+}
+
+message NewChatRequest {
+  protocol.Chat chat = 1;
+}
+
+message NewChatResponse {
+
+}

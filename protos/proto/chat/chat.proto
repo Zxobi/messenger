@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package chat;
+
+import "protocol/protocol.proto";
+
+option go_package = "dvid.chat.v1;chatv1";
+
+service ChatService {
+  rpc Create (CreateChatRequest) returns (CreateChatResponse);
+
+  rpc Chat (ChatRequest) returns (ChatResponse);
+  rpc UserChats (UserChatsRequest) returns (UserChatsResponse);
+
+  rpc SendMessage (SendMessageRequest) returns (SendMessageResponse);
+  rpc Messages (MessagesRequest) returns (MessagesResponse);
+}
+
+message SendMessageRequest {
+  bytes cid = 1;
+  bytes uid = 2;
+  string text = 3;
+}
+
+message SendMessageResponse {
+  protocol.ChatMessage message = 1;
+}
+
+message MessagesRequest {
+  bytes cid = 1;
+}
+
+message MessagesResponse {
+  repeated protocol.ChatMessage messages = 1;
+}
+
+message CreateChatRequest {
+  bytes from_uid = 1;
+  bytes to_uid = 2;
+}
+
+message CreateChatResponse {
+  protocol.Chat chat = 1;
+}
+
+message ChatRequest {
+  bytes cid = 1;
+}
+
+message ChatResponse {
+  protocol.Chat chat = 1;
+}
+
+message UserChatsRequest {
+  bytes uid = 1;
+}
+
+message UserChatsResponse {
+  repeated protocol.Chat chats = 1;
+}
