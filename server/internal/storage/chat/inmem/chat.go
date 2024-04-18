@@ -12,13 +12,13 @@ import (
 
 type ChatStorage struct {
 	hash map[[16]byte]model.Chat
-	rw   sync.RWMutex
+	rw   *sync.RWMutex
 }
 
 func NewChatStorage() *ChatStorage {
 	return &ChatStorage{
 		hash: make(map[[16]byte]model.Chat),
-		rw:   sync.RWMutex{},
+		rw:   &sync.RWMutex{},
 	}
 }
 

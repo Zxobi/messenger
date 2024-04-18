@@ -13,13 +13,13 @@ import (
 
 type Storage struct {
 	hash map[[16]byte]model.User
-	rw   sync.RWMutex
+	rw   *sync.RWMutex
 }
 
 func New() *Storage {
 	return &Storage{
 		hash: make(map[[16]byte]model.User),
-		rw:   sync.RWMutex{},
+		rw:   &sync.RWMutex{},
 	}
 }
 

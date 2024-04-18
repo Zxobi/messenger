@@ -17,7 +17,7 @@ type Client struct {
 	registrar  Registrar
 	msgHandler MsgHandler
 	props      map[string]string
-	mu         sync.RWMutex
+	mu         *sync.RWMutex
 }
 
 type ClientConfig struct {
@@ -46,6 +46,7 @@ func NewClient(log *slog.Logger, conn *websocket.Conn, config *ClientConfig, reg
 		registrar:  registrar,
 		msgHandler: handler,
 		props:      make(map[string]string),
+		mu:         &sync.RWMutex{},
 	}
 }
 

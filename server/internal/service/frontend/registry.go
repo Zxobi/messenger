@@ -27,7 +27,7 @@ type ClientRegistry struct {
 	clientUser  map[Client]*model.User
 	chatClients map[[16]byte][]Client
 
-	mu sync.RWMutex
+	mu *sync.RWMutex
 }
 
 func NewClientRegistry(log *slog.Logger) *ClientRegistry {
@@ -35,6 +35,7 @@ func NewClientRegistry(log *slog.Logger) *ClientRegistry {
 		log:         log,
 		clientUser:  make(map[Client]*model.User),
 		chatClients: make(map[[16]byte][]Client),
+		mu:          &sync.RWMutex{},
 	}
 }
 
