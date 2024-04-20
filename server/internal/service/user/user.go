@@ -17,7 +17,7 @@ type Service struct {
 }
 
 type UserSaver interface {
-	SaveUser(ctx context.Context, email string, bio string) (model.User, error)
+	Save(ctx context.Context, email string, bio string) (model.User, error)
 }
 
 type UserProvider interface {
@@ -44,7 +44,7 @@ func (u *Service) Create(ctx context.Context, email string, bio string) (*model.
 
 	log.Debug("registering user")
 
-	usr, err := u.us.SaveUser(ctx, email, bio)
+	usr, err := u.us.Save(ctx, email, bio)
 	if err != nil {
 		if errors.Is(err, user.ErrUserExists) {
 			u.log.Debug("user already exists", logger.Err(err))

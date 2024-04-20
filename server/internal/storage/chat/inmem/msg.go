@@ -1,6 +1,7 @@
 package inmem
 
 import (
+	"context"
 	"fmt"
 	"github.com/dvid-messanger/internal/domain/model"
 	"github.com/dvid-messanger/internal/lib/cutils"
@@ -22,7 +23,7 @@ func NewMessageStorage() *MessageStorage {
 	}
 }
 
-func (s *MessageStorage) Messages(cid []byte) ([]model.ChatMessage, error) {
+func (s *MessageStorage) Messages(ctx context.Context, cid []byte) ([]model.ChatMessage, error) {
 	op := "storage.inmem.Messages"
 
 	s.rw.RLock()
@@ -35,7 +36,7 @@ func (s *MessageStorage) Messages(cid []byte) ([]model.ChatMessage, error) {
 	return cutils.Copy(c), nil
 }
 
-func (s *MessageStorage) SaveMessage(cid []byte, from []byte, text string) (model.ChatMessage, error) {
+func (s *MessageStorage) Save(ctx context.Context, cid []byte, from []byte, text string) (model.ChatMessage, error) {
 	keyCid := [16]byte(cid)
 	mid := uuid.New()
 	cm := model.ChatMessage{

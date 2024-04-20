@@ -21,8 +21,8 @@ func New() *Storage {
 	}
 }
 
-func (s *Storage) SaveUser(ctx context.Context, uid []byte, email string, passHash []byte) (model.UserCredentials, error) {
-	const op = "storage.inmem.SaveUser"
+func (s *Storage) Save(ctx context.Context, uid []byte, email string, passHash []byte) (model.UserCredentials, error) {
+	const op = "storage.inmem.Save"
 
 	s.rw.Lock()
 	defer s.rw.Unlock()

@@ -2,6 +2,7 @@ package inmem
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"github.com/dvid-messanger/internal/domain/model"
 	"github.com/dvid-messanger/internal/storage/chat"
@@ -22,7 +23,7 @@ func NewChatStorage() *ChatStorage {
 	}
 }
 
-func (s *ChatStorage) Chat(cid []byte) (model.Chat, error) {
+func (s *ChatStorage) Chat(ctx context.Context, cid []byte) (model.Chat, error) {
 	op := "storage.inmem.Chat"
 
 	s.rw.RLock()
@@ -35,7 +36,7 @@ func (s *ChatStorage) Chat(cid []byte) (model.Chat, error) {
 	return c, nil
 }
 
-func (s *ChatStorage) UserChats(uid []byte) ([]model.Chat, error) {
+func (s *ChatStorage) UserChats(ctx context.Context, uid []byte) ([]model.Chat, error) {
 	op := "storage.inmem.UserChats"
 
 	s.rw.RLock()
@@ -54,8 +55,8 @@ func (s *ChatStorage) UserChats(uid []byte) ([]model.Chat, error) {
 	return uChats, nil
 }
 
-func (s *ChatStorage) SaveChat(from []byte, to []byte) (model.Chat, error) {
-	op := "storage.inmem.SaveChat"
+func (s *ChatStorage) Save(ctx context.Context, from []byte, to []byte) (model.Chat, error) {
+	op := "storage.inmem.Save"
 
 	s.rw.Lock()
 	defer s.rw.Unlock()

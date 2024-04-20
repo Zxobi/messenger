@@ -27,19 +27,19 @@ type ChatProvider interface {
 }
 
 type UserChatProvider interface {
-	UserChats(uid []byte) ([]model.Chat, error)
+	UserChats(ctx context.Context, uid []byte) ([]model.Chat, error)
 }
 
 type ChatSaver interface {
-	SaveChat(from []byte, to []byte) (model.Chat, error)
+	Save(ctx context.Context, from []byte, to []byte) (model.Chat, error)
 }
 
 type MessageProvider interface {
-	Messages(cid []byte) ([]model.ChatMessage, error)
+	Messages(ctx context.Context, cid []byte) ([]model.ChatMessage, error)
 }
 
 type MessageSaver interface {
-	SaveMessage(cid []byte, from []byte, text string) (model.ChatMessage, error)
+	Save(ctx context.Context, cid []byte, from []byte, text string) (model.ChatMessage, error)
 }
 
 type ChatNotifier interface {
@@ -81,7 +81,7 @@ func (s *ChatService) Create(ctx context.Context, from []byte, to []byte) (*mode
 
 	log.Debug("creating chat")
 
-	c, err := s.cs.SaveChat(from, to)
+	c, err := s.cs.Save(ctx, from, to)
 	if err != nil {
 		if errors.Is(err, chat.ErrChatExists) {
 			return nil, fmt.Errorf("%s: %w", op, ErrChatExists)
@@ -128,7 +128,7 @@ func (s *ChatService) UserChats(ctx context.Context, uid []byte) ([]model.Chat, 
 
 	log.Debug("getting user chats")
 
-	chats, err := s.ucp.UserChats(uid)
+	chats, err := s.ucp.UserChats(ctx, uid)
 	if err != nil {
 		if errors.Is(err, chat.ErrUserChatsNotFound) {
 			return nil, fmt.Errorf("%s: %w", op, ErrUserChatsNotFound)
@@ -148,7 +148,7 @@ func (s *ChatService) Messages(ctx context.Context, cid []byte) ([]model.ChatMes
 
 	log.Debug("getting messages")
 
-	messages, err := s.mp.Messages(cid)
+	messages, err := s.mp.Messages(ctx, cid)
 	if err != nil {
 		if errors.Is(err, chat.ErrUserChatsNotFound) {
 			return nil, fmt.Errorf("%s: %w", op, ErrMessagesNotFound)
@@ -168,7 +168,7 @@ func (s *ChatService) SendMessage(ctx context.Context, cid []byte, from []byte, 
 
 	log.Debug("saving message")
 
-	m, err := s.ms.SaveMessage(cid, from, text)
+	m, err := s.ms.Save(ctx, cid, from, text)
 	if err != nil {
 		log.Error("failed to save chat", logger.Err(err))
 		return nil, fmt.Errorf("%s: %w", op, err)
