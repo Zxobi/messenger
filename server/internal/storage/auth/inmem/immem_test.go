@@ -14,11 +14,10 @@ import (
 )
 
 func TestAuthStorage_Save(t *testing.T) {
-	op := "TestAuthStorage_Save"
 	t.Parallel()
 
 	for i := 1; i <= 10; i++ {
-		t.Run(fmt.Sprintf("%s i = %d", op, i), func(t *testing.T) {
+		t.Run(fmt.Sprintf("Save i = %d", i), func(t *testing.T) {
 			t.Parallel()
 
 			storage := inmem.New()
@@ -35,7 +34,7 @@ func TestAuthStorage_Save(t *testing.T) {
 		})
 	}
 
-	t.Run(fmt.Sprintf("%s_EmailExistsReturnError", op), func(t *testing.T) {
+	t.Run("EmailExistsError", func(t *testing.T) {
 		t.Parallel()
 
 		storage := inmem.New()
@@ -50,8 +49,7 @@ func TestAuthStorage_Save(t *testing.T) {
 		require.Error(t, err, "save existing same email should error")
 		assert.ErrorIs(t, err, auth.ErrUserExists, "error type correct")
 	})
-
-	t.Run(fmt.Sprintf("%s_IdExistsReturnError", op), func(t *testing.T) {
+	t.Run("IdExistsError", func(t *testing.T) {
 		t.Parallel()
 
 		storage := inmem.New()

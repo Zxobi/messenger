@@ -30,7 +30,7 @@ func (s *MessageStorage) Messages(ctx context.Context, cid []byte) ([]model.Chat
 	defer s.rw.RUnlock()
 	c, ok := s.hash[[16]byte(cid)]
 	if !ok {
-		return nil, fmt.Errorf("%s: %w", op, chat.ErrChatMessagesNotFound)
+		return nil, fmt.Errorf("%s: %w", op, chat.ErrMessagesNotFound)
 	}
 
 	return cutils.Copy(c), nil

@@ -23,7 +23,7 @@ type ChatService struct {
 }
 
 type ChatProvider interface {
-	Chat(cid []byte) (model.Chat, error)
+	Chat(ctx context.Context, cid []byte) (model.Chat, error)
 }
 
 type UserChatProvider interface {
@@ -107,7 +107,7 @@ func (s *ChatService) Chat(ctx context.Context, cid []byte) (*model.Chat, error)
 
 	log.Debug("getting chat")
 
-	c, err := s.cp.Chat(cid)
+	c, err := s.cp.Chat(ctx, cid)
 	if err != nil {
 		if errors.Is(err, chat.ErrChatNotFound) {
 			return nil, fmt.Errorf("%s: %w", op, ErrChatNotFound)
@@ -150,7 +150,7 @@ func (s *ChatService) Messages(ctx context.Context, cid []byte) ([]model.ChatMes
 
 	messages, err := s.mp.Messages(ctx, cid)
 	if err != nil {
-		if errors.Is(err, chat.ErrUserChatsNotFound) {
+		if errors.Is(err, chat.ErrMessagesNotFound) {
 			return nil, fmt.Errorf("%s: %w", op, ErrMessagesNotFound)
 		}
 

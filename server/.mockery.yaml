@@ -1,0 +1,1 @@
+with-expecter: trueoutpkg: "mock_{{.PackageName}}"dir: "mocks/mock_{{.PackageName}}"packages:  github.com/dvid-messanger/internal/service/auth:    config:      all: true  github.com/dvid-messanger/internal/service/user:    config:      all: true  github.com/dvid-messanger/internal/service/chat:    config:      all: true
