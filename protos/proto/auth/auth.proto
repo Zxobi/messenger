@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package auth;
 
-option go_package = "dvid.auth.v1;authv1";
+option go_package = "github.com/dvid-messanger/protos/gen/auth;authv1";
 
 service AuthService {
   rpc Register (RegisterRequest) returns (RegisterResponse);

@@ -3,7 +3,7 @@ package auth
 import (
 	"context"
 	"fmt"
-	authv1 "github.com/dvid-messanger/protos/gen/go/auth"
+	authv1 "github.com/dvid-messanger/protos/gen/auth"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/retry"
 	"google.golang.org/grpc"

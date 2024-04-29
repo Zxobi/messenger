@@ -8,7 +8,7 @@ import (
 	"github.com/dvid-messanger/internal/lib/logger"
 	"github.com/dvid-messanger/internal/server/frontend/ws"
 	"github.com/dvid-messanger/internal/service/frontend"
-	feproto "github.com/dvid-messanger/protos/gen/go/frontend"
+	feproto "github.com/dvid-messanger/protos/gen/frontend"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/golang/protobuf/proto"
 	"log/slog"

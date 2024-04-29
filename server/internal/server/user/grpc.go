@@ -7,7 +7,7 @@ import (
 	"github.com/dvid-messanger/internal/domain/model"
 	grpcutil "github.com/dvid-messanger/internal/lib/grpc"
 	"github.com/dvid-messanger/internal/service/user"
-	userv1 "github.com/dvid-messanger/protos/gen/go/user"
+	userv1 "github.com/dvid-messanger/protos/gen/user"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

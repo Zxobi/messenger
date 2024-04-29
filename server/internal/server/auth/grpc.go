@@ -5,7 +5,7 @@ import (
 	"errors"
 	gvalidate "github.com/dvid-messanger/internal/lib/grpc"
 	"github.com/dvid-messanger/internal/service/auth"
-	authv1 "github.com/dvid-messanger/protos/gen/go/auth"
+	authv1 "github.com/dvid-messanger/protos/gen/auth"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

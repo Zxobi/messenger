@@ -113,7 +113,7 @@ func (c *Client) readPump() {
 
 		if err = c.msgHandler.HandleMsg(c, message); err != nil {
 			log.Error("failed to handle client msg", logger.Err(err))
-			break
+			//break
 		}
 	}
 }

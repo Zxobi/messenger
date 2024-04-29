@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package protocol;
 
-option go_package = "github.com/dvid-messanger/protos/gen/go/protocol;protocolv1";
+option go_package = "github.com/dvid-messanger/protos/gen/protocol;protocolv1";
 
 enum ChatType {
   UNKNOWN = 0;

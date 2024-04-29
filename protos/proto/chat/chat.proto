@@ -4,7 +4,7 @@ package chat;
 
 import "protocol/protocol.proto";
 
-option go_package = "dvid.chat.v1;chatv1";
+option go_package = "github.com/dvid-messanger/protos/gen/chat;chatv1";
 
 service ChatService {
   rpc Create (CreateChatRequest) returns (CreateChatResponse);

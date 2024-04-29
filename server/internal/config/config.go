@@ -34,10 +34,18 @@ type AuthConfig struct {
 
 type UserConfig struct {
 	GrpcConfig `yaml:"grpc"`
+	Storage    UsersMongo `yaml:"storage"`
 }
 
 type ChatConfig struct {
 	GrpcConfig `yaml:"grpc"`
+}
+
+type UsersMongo struct {
+	Timeout         time.Duration `yaml:"timeout"`
+	ConnectUri      string        `yaml:"connect_uri"`
+	DbName          string        `yaml:"db_name"`
+	UsersCollection string        `yaml:"users_collection"`
 }
 
 type FrontendConfig struct {

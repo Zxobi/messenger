@@ -9,7 +9,7 @@ import (
 	"github.com/dvid-messanger/internal/lib/id"
 	"github.com/dvid-messanger/internal/lib/proto"
 	"github.com/dvid-messanger/internal/server/frontend/ws"
-	frontendv1 "github.com/dvid-messanger/protos/gen/go/frontend"
+	frontendv1 "github.com/dvid-messanger/protos/gen/frontend"
 	"log/slog"
 )
 

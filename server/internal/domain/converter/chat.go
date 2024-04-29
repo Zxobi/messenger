@@ -3,7 +3,7 @@ package converter
 import (
 	"github.com/dvid-messanger/internal/domain/model"
 	"github.com/dvid-messanger/internal/lib/cutils"
-	protocolv1 "github.com/dvid-messanger/protos/gen/go/protocol"
+	protocolv1 "github.com/dvid-messanger/protos/gen/protocol"
 )
 
 func ChatToDTO(c *model.Chat) *protocolv1.Chat {

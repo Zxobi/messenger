@@ -10,6 +10,11 @@ services:
     grpc:
       port: 20203
       timeout: 10h
+    storage:
+      timeout: 1m
+      connect_uri: "mongodb://localhost:27017"
+      db_name: "db_user"
+      users_collection: "users"
   chat:
     grpc:
       port: 20204

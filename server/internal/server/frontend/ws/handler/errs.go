@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/dvid-messanger/internal/lib/proto"
-	"github.com/dvid-messanger/protos/gen/go/frontend"
+	"github.com/dvid-messanger/protos/gen/frontend"
 )
 
 func mustMakeUnauthorized(dt frontendv1.DownstreamType) []byte {

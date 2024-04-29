@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/dvid-messanger/internal/domain/converter"
 	"github.com/dvid-messanger/internal/domain/model"
-	frontendv1 "github.com/dvid-messanger/protos/gen/go/frontend"
+	frontendv1 "github.com/dvid-messanger/protos/gen/frontend"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

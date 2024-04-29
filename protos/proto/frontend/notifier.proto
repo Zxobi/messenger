@@ -4,7 +4,7 @@ package frontend;
 
 import "protocol/protocol.proto";
 
-option go_package = "dvid.frontend.v1;frontendv1";
+option go_package = "github.com/dvid-messanger/protos/gen/frontend;frontendv1";
 
 service Notifier {
   rpc NewMessage (NewMessageRequest) returns (NewMessageResponse);

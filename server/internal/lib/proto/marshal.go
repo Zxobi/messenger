@@ -2,7 +2,7 @@ package proto
 
 import (
 	"fmt"
-	frontendv1 "github.com/dvid-messanger/protos/gen/go/frontend"
+	frontendv1 "github.com/dvid-messanger/protos/gen/frontend"
 	"github.com/golang/protobuf/proto"
 	"reflect"
 )

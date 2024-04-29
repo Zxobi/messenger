@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/dvid-messanger/internal/domain/converter"
 	"github.com/dvid-messanger/internal/domain/model"
-	frontendv1 "github.com/dvid-messanger/protos/gen/go/frontend"
+	frontendv1 "github.com/dvid-messanger/protos/gen/frontend"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/retry"
 	"google.golang.org/grpc"
