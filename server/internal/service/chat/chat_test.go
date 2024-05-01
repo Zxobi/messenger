@@ -28,7 +28,7 @@ func TestCreateChat(t *testing.T) {
 
 		expected := model.Chat{
 			Id:      []byte("mockChatId"),
-			Members: []model.ChatMember{{Id: []byte("from")}, {Id: []byte("to")}},
+			Members: []model.ChatMember{{Uid: []byte("from")}, {Uid: []byte("to")}},
 		}
 		mockChatSaver.On("Save", mock.Anything, mock.Anything, mock.Anything).Return(expected, nil)
 		mockChatNotifier.On("NewChat", mock.Anything, mock.Anything).Return(nil)
@@ -64,7 +64,7 @@ func TestGetChat(t *testing.T) {
 		mockChatProvider := &mock_chat.MockChatProvider{}
 		expected := model.Chat{
 			Id:      []byte("mockChatId"),
-			Members: []model.ChatMember{{Id: []byte("from")}, {Id: []byte("to")}},
+			Members: []model.ChatMember{{Uid: []byte("from")}, {Uid: []byte("to")}},
 		}
 		mockChatProvider.On("Chat", mock.Anything, mock.Anything).Return(expected, nil)
 
@@ -98,8 +98,8 @@ func TestUserChats(t *testing.T) {
 		mockUserChatProvider := &mock_chat.MockUserChatProvider{}
 
 		expectedChats := []model.Chat{
-			{Id: []byte("chat1"), Members: []model.ChatMember{{Id: []byte("user1")}, {Id: []byte("user2")}}},
-			{Id: []byte("chat2"), Members: []model.ChatMember{{Id: []byte("user1")}, {Id: []byte("user3")}}},
+			{Id: []byte("chat1"), Members: []model.ChatMember{{Uid: []byte("user1")}, {Uid: []byte("user2")}}},
+			{Id: []byte("chat2"), Members: []model.ChatMember{{Uid: []byte("user1")}, {Uid: []byte("user3")}}},
 		}
 
 		mockUserChatProvider.On("UserChats", mock.Anything, mock.Anything).Return(expectedChats, nil)

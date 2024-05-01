@@ -16,14 +16,7 @@ func main() {
 
 	log.Info("starting", slog.Any("cfg", cfg))
 
-	application := user.New(
-		log,
-		cfg.Services.User.Port,
-		cfg.Services.User.Storage.Timeout,
-		cfg.Services.User.Storage.ConnectUri,
-		cfg.Services.User.Storage.DbName,
-		cfg.Services.User.Storage.UsersCollection,
-	)
+	application := user.New(log, &cfg.Services.User)
 	go application.MustRun()
 
 	stop := make(chan os.Signal, 1)

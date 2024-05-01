@@ -8,13 +8,18 @@ const (
 )
 
 type Chat struct {
-	Id      []byte
-	Type    ChatType
-	Members []ChatMember
+	Id      []byte       `bson:"_id"`
+	Type    ChatType     `bson:"type"`
+	Members []ChatMember `bson:"members"`
 }
 
 type ChatMember struct {
-	Id []byte
+	Uid []byte `bson:"uid"`
+}
+
+type UserChats struct {
+	Uid   []byte   `bson:"_id"`
+	Chats [][]byte `bson:"chats"`
 }
 
 type ChatMessage struct {

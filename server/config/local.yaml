@@ -5,6 +5,9 @@ services:
     grpc:
       port: 20202
       timeout: 10h
+    storage:
+      timeout: 1m
+      connect_uri: "mongodb://localhost:27017"
     token_ttl: 1h
   user:
     grpc:
@@ -13,12 +16,13 @@ services:
     storage:
       timeout: 1m
       connect_uri: "mongodb://localhost:27017"
-      db_name: "db_user"
-      users_collection: "users"
   chat:
     grpc:
       port: 20204
       timeout: 10h
+    storage:
+      timeout: 1m
+      connect_uri: "mongodb://localhost:27017"
   frontend:
     grpc:
       port: 20205

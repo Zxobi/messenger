@@ -7,4 +7,5 @@ var (
 	ErrChatNotFound      = errors.New("chat not found")
 	ErrMessagesNotFound  = errors.New("chat messages not found")
 	ErrUserChatsNotFound = errors.New("user chats not found")
+	ErrInternal          = errors.New("storage error")
 )

@@ -1,0 +1,9 @@
+db.creds.createIndex(
+  {
+      "email": 1
+  },
+  {
+      unique: true,
+      sparse: true,
+  }
+)

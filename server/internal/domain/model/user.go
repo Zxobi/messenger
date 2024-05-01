@@ -7,7 +7,7 @@ type User struct {
 }
 
 type UserCredentials struct {
-	Id       []byte
-	Email    string
-	PassHash []byte
+	Id       []byte `bson:"_id"`
+	Email    string `bson:"email"`
+	PassHash []byte `bson:"pass_hash"`
 }

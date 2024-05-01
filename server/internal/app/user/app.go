@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"github.com/dvid-messanger/internal/app/user/grpc"
+	"github.com/dvid-messanger/internal/config"
 	"github.com/dvid-messanger/internal/lib/logger"
 	"github.com/dvid-messanger/internal/service/user"
 	"github.com/dvid-messanger/internal/storage/user/mongo"
@@ -20,17 +21,10 @@ type App struct {
 	grpcApp *grpc.App
 }
 
-func New(
-	log *slog.Logger,
-	grpcPort int,
-	mongoTimeout time.Duration,
-	mongoURI string,
-	dbName string,
-	usersColName string,
-) *App {
-	storage := mongo.New(log, dbName, usersColName, mongodb.Timeout(mongoTimeout), mongodb.URI(mongoURI))
+func New(log *slog.Logger, cfg *config.UserConfig) *App {
+	storage := mongo.New(log, mongodb.Timeout(cfg.Storage.Timeout), mongodb.URI(cfg.Storage.ConnectUri))
 	userService := user.NewUser(log, storage, storage)
-	grpcApp := grpc.New(log, userService, grpcPort)
+	grpcApp := grpc.New(log, userService, cfg.Port)
 
 	return &App{
 		log:     log,
@@ -50,10 +44,7 @@ func (app *App) Run() error {
 	if err := app.storage.Connect(context.TODO()); err != nil {
 		return err
 	}
-	if err := app.grpcApp.Run(); err != nil {
-		return err
-	}
-	return nil
+	return app.grpcApp.Run()
 }
 
 func (app *App) Stop() {

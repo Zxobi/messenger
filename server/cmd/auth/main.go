@@ -16,7 +16,7 @@ func main() {
 
 	log.Info("starting", slog.Any("cfg", cfg))
 
-	application := auth.New(log, cfg.Services.Auth.Port, cfg.Services.Auth.TokenTTL, []byte(cfg.Services.Auth.Secret))
+	application := auth.New(log, &cfg.Services.Auth)
 	go application.MustRun()
 
 	stop := make(chan os.Signal, 1)

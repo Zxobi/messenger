@@ -129,7 +129,7 @@ func (cr *ClientRegistry) RegisterChat(chat *model.Chat) error {
 	clients := make([]Client, 0)
 	for client, user := range cr.clientUser {
 		if slices.ContainsFunc(chat.Members, func(member model.ChatMember) bool {
-			return bytes.Equal(member.Id, user.Id)
+			return bytes.Equal(member.Uid, user.Id)
 		}) {
 			clients = append(clients, client)
 		}

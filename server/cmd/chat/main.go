@@ -18,10 +18,8 @@ func main() {
 
 	application, err := chat.New(
 		log,
-		cfg.Services.Chat.Port,
-		cfg.Clients.Frontend.Address,
-		cfg.Clients.Frontend.Timeout,
-		cfg.Clients.Frontend.RetriesCount,
+		&cfg.Services.Chat,
+		&cfg.Clients.Frontend,
 	)
 	if err != nil {
 		panic(err)

@@ -70,7 +70,7 @@ func (s *ChatStorage) Save(ctx context.Context, from []byte, to []byte) (model.C
 	c := model.Chat{
 		Id:      cid[:],
 		Type:    model.CTPersonal,
-		Members: []model.ChatMember{{Id: from}, {Id: to}},
+		Members: []model.ChatMember{{Uid: from}, {Uid: to}},
 	}
 	s.hash[cid] = c
 
@@ -79,6 +79,6 @@ func (s *ChatStorage) Save(ctx context.Context, from []byte, to []byte) (model.C
 
 func containsUser(c *model.Chat, uid []byte) bool {
 	return slices.ContainsFunc(c.Members, func(m model.ChatMember) bool {
-		return bytes.Equal(m.Id, uid)
+		return bytes.Equal(m.Uid, uid)
 	})
 }

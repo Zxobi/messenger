@@ -28,24 +28,24 @@ type Services struct {
 
 type AuthConfig struct {
 	GrpcConfig `yaml:"grpc"`
+	Storage    MongoConfig   `yaml:"storage"`
 	TokenTTL   time.Duration `yaml:"token_ttl" env-default:"1h"`
 	Secret     string        `yaml:"secret" env-default:"supa-dupa-secret"`
 }
 
 type UserConfig struct {
 	GrpcConfig `yaml:"grpc"`
-	Storage    UsersMongo `yaml:"storage"`
+	Storage    MongoConfig `yaml:"storage"`
 }
 
 type ChatConfig struct {
 	GrpcConfig `yaml:"grpc"`
+	Storage    MongoConfig `yaml:"storage"`
 }
 
-type UsersMongo struct {
-	Timeout         time.Duration `yaml:"timeout"`
-	ConnectUri      string        `yaml:"connect_uri"`
-	DbName          string        `yaml:"db_name"`
-	UsersCollection string        `yaml:"users_collection"`
+type MongoConfig struct {
+	Timeout    time.Duration `yaml:"timeout" env-default:"1m"`
+	ConnectUri string        `yaml:"connect_uri"`
 }
 
 type FrontendConfig struct {

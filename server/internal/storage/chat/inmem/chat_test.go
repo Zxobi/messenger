@@ -26,8 +26,8 @@ func TestChatStorage_ChatSave(t *testing.T) {
 
 		require.Len(t, actualR.Members, 2, "returned chat have two members")
 
-		assert.ElementsMatch(t, uidFrom, actualR.Members[0].Id, "returned first member id match expected")
-		assert.ElementsMatch(t, uidTo, actualR.Members[1].Id, "returned second member id match expected")
+		assert.ElementsMatch(t, uidFrom, actualR.Members[0].Uid, "returned first member id match expected")
+		assert.ElementsMatch(t, uidTo, actualR.Members[1].Uid, "returned second member id match expected")
 
 		assert.Len(t, storage.hash, i, "hash len correct")
 
@@ -37,8 +37,8 @@ func TestChatStorage_ChatSave(t *testing.T) {
 
 		require.Len(t, actualS.Members, 2, "saved chat have two members")
 
-		assert.ElementsMatch(t, uidFrom, actualS.Members[0].Id, "saved first member id match expected")
-		assert.ElementsMatch(t, uidTo, actualS.Members[1].Id, "saved second member id match expected")
+		assert.ElementsMatch(t, uidFrom, actualS.Members[0].Uid, "saved first member id match expected")
+		assert.ElementsMatch(t, uidTo, actualS.Members[1].Uid, "saved second member id match expected")
 	}
 }
 

@@ -15,7 +15,7 @@ func ChatToDTO(c *model.Chat) *protocolv1.Chat {
 
 	for _, member := range c.Members {
 		proto.ChatMembers = append(proto.GetChatMembers(), &protocolv1.ChatMember{
-			Uid: member.Id,
+			Uid: member.Uid,
 		})
 	}
 	return &proto
@@ -30,7 +30,7 @@ func ChatFromDTO(c *protocolv1.Chat) *model.Chat {
 
 	for _, member := range c.GetChatMembers() {
 		chat.Members = append(chat.Members, model.ChatMember{
-			Id: member.GetUid(),
+			Uid: member.GetUid(),
 		})
 	}
 

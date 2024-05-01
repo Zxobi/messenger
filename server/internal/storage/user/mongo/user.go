@@ -14,16 +14,18 @@ import (
 	"log/slog"
 )
 
+const (
+	nameDb              = "db_user"
+	nameUsersCollection = "users"
+)
+
 type Storage struct {
 	log *slog.Logger
 	mongodb.MongoDatabase
-	users        *mongo.Collection
-	dbName       string
-	usersColName string
 }
 
-func New(log *slog.Logger, dbName string, usersColName string, opts ...mongodb.Option) *Storage {
-	storage := &Storage{log: log, dbName: dbName, usersColName: usersColName}
+func New(log *slog.Logger, opts ...mongodb.Option) *Storage {
+	storage := &Storage{log: log}
 	storage.ApplyOptions(opts...)
 	return storage
 }
@@ -38,9 +40,6 @@ func (s *Storage) Connect(ctx context.Context) error {
 	}
 
 	log.Info("connected to db")
-
-	db := s.Client.Database(s.dbName)
-	s.users = db.Collection(s.usersColName)
 	return nil
 }
 
@@ -49,19 +48,19 @@ func (s *Storage) User(ctx context.Context, uid []byte) (model.User, error) {
 	log := s.log.With(slog.String("op", op))
 
 	var usr model.User
-	res := s.users.FindOne(ctx, bson.D{{"_id", uid}})
+	res := s.usersCollection().FindOne(ctx, bson.D{{"_id", uid}})
 	if res.Err() != nil {
 		if errors.Is(res.Err(), mongo.ErrNoDocuments) {
-			return usr, user.ErrUserNotFound
+			return usr, fmt.Errorf("%s: %w", op, user.ErrUserNotFound)
 		}
 
 		log.Error("fetch user error", logger.Err(res.Err()))
-		return usr, user.ErrInternal
+		return usr, fmt.Errorf("%s: %w", op, user.ErrInternal)
 	}
 
 	if err := res.Decode(&usr); err != nil {
 		log.Error("failed to decode user", logger.Err(err))
-		return usr, user.ErrInternal
+		return usr, fmt.Errorf("%s: %w", op, user.ErrInternal)
 	}
 
 	return usr, nil
@@ -71,28 +70,17 @@ func (s *Storage) Users(ctx context.Context) ([]model.User, error) {
 	const op = "mongo.Users"
 	log := s.log.With(slog.String("op", op))
 
-	cursor, err := s.users.Find(ctx, bson.D{{}}, nil)
+	cursor, err := s.usersCollection().Find(ctx, bson.M{}, nil)
 	if err != nil {
 		log.Error("failed to fetch users", logger.Err(err))
-		return nil, user.ErrInternal
+		return nil, fmt.Errorf("%s: %w", op, user.ErrInternal)
 	}
 
 	users := make([]model.User, 0)
-	for cursor.Next(ctx) {
-		var usr model.User
-		if err = cursor.Decode(&usr); err != nil {
-			log.Error("failed to decode users", logger.Err(err))
-			return nil, user.ErrInternal
-		}
-
-		users = append(users, usr)
+	if err = cursor.All(ctx, &users); err != nil {
+		log.Error("failed to fetch users", logger.Err(err))
+		return nil, fmt.Errorf("%s: %w", op, user.ErrInternal)
 	}
-
-	if cursor.Err() != nil {
-		log.Error("cursor error", logger.Err(cursor.Err()))
-		return nil, user.ErrInternal
-	}
-	_ = cursor.Close(ctx)
 
 	return users, nil
 }
@@ -104,14 +92,18 @@ func (s *Storage) Save(ctx context.Context, email string, bio string) (model.Use
 	uid := uuid.New()
 	usr := model.User{Id: uid[:], Email: email, Bio: bio}
 
-	if _, err := s.users.InsertOne(ctx, usr); err != nil {
+	if _, err := s.usersCollection().InsertOne(ctx, usr); err != nil {
 		if mongo.IsDuplicateKeyError(err) {
-			return model.User{}, user.ErrUserExists
+			return model.User{}, fmt.Errorf("%s: %w", op, user.ErrUserExists)
 		}
 
 		log.Error("failed to save user", logger.Err(err))
-		return model.User{}, user.ErrInternal
+		return model.User{}, fmt.Errorf("%s: %w", op, user.ErrInternal)
 	}
 
 	return usr, nil
+}
+
+func (s *Storage) usersCollection() *mongo.Collection {
+	return s.Client.Database(nameDb).Collection(nameUsersCollection)
 }

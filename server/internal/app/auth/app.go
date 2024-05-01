@@ -1,38 +1,75 @@
 package auth
 
 import (
+	"context"
 	"github.com/dvid-messanger/internal/app/auth/grpc"
+	"github.com/dvid-messanger/internal/config"
 	"github.com/dvid-messanger/internal/lib/jwt"
+	"github.com/dvid-messanger/internal/lib/logger"
 	"github.com/dvid-messanger/internal/service/auth"
-	"github.com/dvid-messanger/internal/storage/auth/inmem"
+	"github.com/dvid-messanger/internal/storage/auth/mongo"
+	"github.com/dvid-messanger/pkg/database/mongodb"
 	"log/slog"
+	"sync"
 	"time"
 )
 
+const defaultStopTimeout = 10 * time.Second
+
 type App struct {
-	GrpcApp *grpc.App
+	log     *slog.Logger
+	grpcApp *grpc.App
+	storage *mongo.Storage
 }
 
-func New(log *slog.Logger, grpcPort int, tokenTtl time.Duration, secret []byte) *App {
-	storage := inmem.New()
-	tokenMaker := jwt.NewTokenizer(secret)
-	authService := auth.NewService(log, storage, storage, tokenMaker, tokenTtl)
+func New(log *slog.Logger, cfg *config.AuthConfig) *App {
+	storage := mongo.New(log, mongodb.Timeout(cfg.Storage.Timeout), mongodb.URI(cfg.Storage.ConnectUri))
+	tokenMaker := jwt.NewTokenizer([]byte(cfg.Secret))
+	authService := auth.NewService(log, storage, storage, tokenMaker, cfg.TokenTTL)
 
-	grpcApp := grpc.New(log, authService, grpcPort)
+	grpcApp := grpc.New(log, authService, cfg.Port)
 
 	return &App{
-		GrpcApp: grpcApp,
+		log:     log,
+		grpcApp: grpcApp,
+		storage: storage,
 	}
 }
 
 func (app *App) MustRun() {
-	app.GrpcApp.MustRun()
+	if err := app.storage.Connect(context.TODO()); err != nil {
+		panic(err)
+	}
+	app.grpcApp.MustRun()
 }
 
 func (app *App) Run() error {
-	return app.GrpcApp.Run()
+	if err := app.storage.Connect(context.TODO()); err != nil {
+		return err
+	}
+	return app.grpcApp.Run()
 }
 
 func (app *App) Stop() {
-	app.GrpcApp.Stop()
+	const op = "app.Stop"
+	log := app.log.With(slog.String("op", op))
+
+	var wg sync.WaitGroup
+	wg.Add(2)
+
+	ctx, cancel := context.WithTimeout(context.Background(), defaultStopTimeout)
+	defer cancel()
+
+	go func() {
+		defer wg.Done()
+		app.grpcApp.Stop()
+	}()
+	go func() {
+		defer wg.Done()
+		if err := app.storage.Close(ctx); err != nil {
+			log.Error("storage closed with error", logger.Err(err))
+		}
+	}()
+
+	wg.Wait()
 }
