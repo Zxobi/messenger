@@ -7,7 +7,7 @@ services:
       timeout: 10h
     storage:
       timeout: 1m
-      connect_uri: "mongodb://localhost:27017"
+      connect_uri: "mongodb://127.0.0.1:27017,127.0.0.1:27018,127.0.0.1:27019/?replicaSet=rs0"
     token_ttl: 1h
   user:
     grpc:
@@ -15,14 +15,14 @@ services:
       timeout: 10h
     storage:
       timeout: 1m
-      connect_uri: "mongodb://localhost:27017"
+      connect_uri: "mongodb://127.0.0.1:27017,127.0.0.1:27018,127.0.0.1:27019/?replicaSet=rs0"
   chat:
     grpc:
       port: 20204
       timeout: 10h
     storage:
       timeout: 1m
-      connect_uri: "mongodb://localhost:27017"
+      connect_uri: "mongodb://127.0.0.1:27017,127.0.0.1:27018,127.0.0.1:27019/?replicaSet=rs0"
   frontend:
     grpc:
       port: 20205

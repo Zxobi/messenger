@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/dvid-messanger/internal/domain/model"
+	"github.com/dvid-messanger/internal/lib/cutils"
 	"github.com/dvid-messanger/internal/lib/logger"
 	"github.com/dvid-messanger/internal/storage/chat"
 	"log/slog"
@@ -24,10 +25,11 @@ type ChatService struct {
 
 type ChatProvider interface {
 	Chat(ctx context.Context, cid []byte) (model.Chat, error)
+	Chats(ctx context.Context, cid [][]byte) ([]model.Chat, error)
 }
 
 type UserChatProvider interface {
-	UserChats(ctx context.Context, uid []byte) ([]model.Chat, error)
+	UserChats(ctx context.Context, uid []byte) (model.UserChats, error)
 }
 
 type ChatSaver interface {
@@ -128,13 +130,22 @@ func (s *ChatService) UserChats(ctx context.Context, uid []byte) ([]model.Chat, 
 
 	log.Debug("getting user chats")
 
-	chats, err := s.ucp.UserChats(ctx, uid)
+	userChats, err := s.ucp.UserChats(ctx, uid)
 	if err != nil {
 		if errors.Is(err, chat.ErrUserChatsNotFound) {
 			return nil, fmt.Errorf("%s: %w", op, ErrUserChatsNotFound)
 		}
 
 		log.Error("failed to get user chats", logger.Err(err))
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	cids := cutils.Map(userChats.Chats, func(userChat model.UserChat) []byte {
+		return userChat.Cid
+	})
+	chats, err := s.cp.Chats(ctx, cids)
+	if err != nil {
+		log.Error("failed to get chats from user chats", logger.Err(err))
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 

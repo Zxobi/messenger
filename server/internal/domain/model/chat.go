@@ -1,5 +1,7 @@
 package model
 
+import "github.com/dvid-messanger/internal/lib/cutils"
+
 type ChatType int32
 
 const (
@@ -10,7 +12,19 @@ const (
 type Chat struct {
 	Id      []byte       `bson:"_id"`
 	Type    ChatType     `bson:"type"`
-	Members []ChatMember `bson:"members"`
+	Members []ChatMember `bson:"members,omitempty"`
+}
+
+func NewPersonalChat(cid []byte, uids ...[]byte) *Chat {
+	return &Chat{
+		Id:   cid,
+		Type: CTPersonal,
+		Members: cutils.Map(uids, func(uid []byte) ChatMember {
+			return ChatMember{
+				Uid: uid,
+			}
+		}),
+	}
 }
 
 type ChatMember struct {
@@ -18,8 +32,14 @@ type ChatMember struct {
 }
 
 type UserChats struct {
-	Uid   []byte   `bson:"_id"`
-	Chats [][]byte `bson:"chats"`
+	Uid   []byte     `bson:"_id"`
+	Chats []UserChat `bson:"chats,omitempty"`
+}
+
+type UserChat struct {
+	Cid  []byte   `bson:"cid"`
+	Type ChatType `bson:"type"`
+	Uid  []byte   `bson:"uid"`
 }
 
 type ChatMessage struct {
