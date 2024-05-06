@@ -7,27 +7,27 @@ services:
       timeout: 10h
     storage:
       timeout: 1m
-      connect_uri: "mongodb://127.0.0.1:27017,127.0.0.1:27018,127.0.0.1:27019/?replicaSet=rs0"
+      connect_uri: "mongodb://mongo-node1,mongo-node2,mongo-node3/?replicaSet=rs0"
     token_ttl: 1h
   user:
     grpc:
-      port: 20203
+      port: 20202
       timeout: 10h
     storage:
       timeout: 1m
-      connect_uri: "mongodb://127.0.0.1:27017,127.0.0.1:27018,127.0.0.1:27019/?replicaSet=rs0"
+      connect_uri: "mongodb://mongo-node1,mongo-node2,mongo-node3/?replicaSet=rs0"
   chat:
     grpc:
-      port: 20204
+      port: 20202
       timeout: 10h
     storage:
       timeout: 1m
-      connect_uri: "mongodb://127.0.0.1:27017,127.0.0.1:27018,127.0.0.1:27019/?replicaSet=rs0"
+      connect_uri: "mongodb://mongo-node1,mongo-node2,mongo-node3/?replicaSet=rs0"
   frontend:
     grpc:
-      port: 20205
+      port: 20202
       timeout: 10h
-    ws_port: 20206
+    ws_port: 20203
     ws_base_path: "/ws"
     send_buff_size: 128
     read_buff_size: 4096
@@ -38,18 +38,18 @@ services:
     pong_wait: 5s
 clients:
   auth:
-    address: "localhost:20202"
+    address: "auth:20202"
     timeout: 1h
     retries_count: 3
   user:
-    address: "localhost:20203"
+    address: "user:20202"
     timeout: 1h
     retries_count: 3
   chat:
-    address: "localhost:20204"
+    address: "chat:20202"
     timeout: 1h
     retries_count: 3
   frontend:
-    address: "localhost:20205"
+    address: "frontend:20202"
     timeout: 1h
     retries_count: 3

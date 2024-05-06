@@ -8,9 +8,11 @@ import (
 	"github.com/dvid-messanger/internal/config"
 	"github.com/dvid-messanger/internal/lib/logger"
 	"github.com/dvid-messanger/internal/service/chat"
-	"github.com/dvid-messanger/internal/storage/chat/inmem"
 	"github.com/dvid-messanger/internal/storage/chat/mongo"
+	"github.com/dvid-messanger/internal/storage/chat/scylla"
 	"github.com/dvid-messanger/pkg/database/mongodb"
+	"github.com/dvid-messanger/pkg/database/scylladb"
+	"github.com/gocql/gocql"
 	"log/slog"
 	"sync"
 	"time"
@@ -32,7 +34,11 @@ func New(
 	const op = "chat.app.New"
 
 	chatStorage := mongo.New(log, mongodb.Timeout(cfg.Storage.Timeout), mongodb.URI(cfg.Storage.ConnectUri))
-	messageStorage := inmem.NewMessageStorage()
+	messageStorage := scylla.New(log)
+	if err := messageStorage.Connect(scylladb.CreateCluster(gocql.Quorum, "db_message", "scylla-node1", "scylla-node2", "scylla-node3")); err != nil {
+		log.Error("failed to connect to message storage", slog.String("op", op))
+		return nil, err
+	}
 	notifier, err := frontend.New(context.TODO(), log, feClientCfg.Address, feClientCfg.Timeout, feClientCfg.RetriesCount)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)

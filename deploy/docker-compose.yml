@@ -1,45 +1,123 @@
-version: '3.8'
-
 services:
-  mongo1:
-    image: mongo:7.0
-    command: ["--replSet", "rs0", "--bind_ip_all", "--port", "27017"]
+  user:
+    container_name: user-service
+    image: user
+    depends_on:
+      - mongosetup
+    networks:
+      web:
+
+  auth:
+    container_name: auth-service
+    image: auth
+    depends_on:
+      - mongosetup
+    networks:
+      web:
+
+  chat:
+    container_name: chat-service
+    image: chat
+    depends_on:
+      - mongosetup
+      - scylla-node1
+      - scylla-node2
+      - scylla-node3
+    networks:
+      web:
+
+  frontend:
+    container_name: frontend-service
+    image: frontend
     ports:
-      - 27017:27017
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    healthcheck:
-      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'host.docker.internal:27017',priority:1},{_id:1,host:'host.docker.internal:27018',priority:0.5},{_id:2,host:'host.docker.internal:27019',priority:0.5}]}) }" | mongosh --port 27017 --quiet
-      interval: 5s
-      timeout: 30s
-      start_period: 0s
-      start_interval: 1s
-      retries: 30
+      - 20203:20203
+    depends_on:
+      - user
+      - auth
+      - chat
+    networks:
+      web:
+
+  scylla-node1:
+    container_name: scylla-node1
+    image: scylladb/scylla:5.2.0
+    restart: always
+    command: --seeds=scylla-node1,scylla-node2 --smp 1 --memory 750M --overprovisioned 1 --api-address 0.0.0.0
+    volumes:
+      - "./scylla/scylla.yaml:/etc/scylla/scylla.yaml"
+      - "./scylla/cassandra-rackdc.properties.dc1:/etc/scylla/cassandra-rackdc.properties"
+    networks:
+      web:
+
+  scylla-node2:
+    container_name: scylla-node2
+    image: scylladb/scylla:5.2.0
+    restart: always
+    command: --seeds=scylla-node1,scylla-node2 --smp 1 --memory 750M --overprovisioned 1 --api-address 0.0.0.0
+    volumes:
+      - "./scylla/scylla.yaml:/etc/scylla/scylla.yaml"
+      - "./scylla/cassandra-rackdc.properties.dc1:/etc/scylla/cassandra-rackdc.properties"
+    networks:
+      web:
+
+  scylla-node3:
+    container_name: scylla-node3
+    image: scylladb/scylla:5.2.0
+    restart: always
+    command: --seeds=scylla-node1,scylla-node2 --smp 1 --memory 750M --overprovisioned 1 --api-address 0.0.0.0
+    volumes:
+      - "./scylla/scylla.yaml:/etc/scylla/scylla.yaml"
+      - "./scylla/cassandra-rackdc.properties.dc1:/etc/scylla/cassandra-rackdc.properties"
+    networks:
+      web:
+
+  mongo-node1:
+    container_name: mongo-node1
+    image: mongo:7.0
+    command: ["--replSet", "rs0", "--bind_ip", "localhost,mongo-node1"]
     volumes:
       - "mongo1_data:/data/db"
       - "mongo1_config:/data/configdb"
+    networks:
+      web:
 
-  mongo2:
+  mongo-node2:
+    container_name: mongo-node2
     image: mongo:7.0
-    command: ["--replSet", "rs0", "--bind_ip_all", "--port", "27018"]
-    ports:
-      - 27018:27018
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    command: ["--replSet", "rs0", "--bind_ip", "localhost,mongo-node2"]
     volumes:
       - "mongo2_data:/data/db"
       - "mongo2_config:/data/configdb"
+    networks:
+      web:
 
-  mongo3:
+  mongo-node3:
+    container_name: mongo-node3
     image: mongo:7.0
-    command: ["--replSet", "rs0", "--bind_ip_all", "--port", "27019"]
-    ports:
-      - 27019:27019
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    command: ["--replSet", "rs0", "--bind_ip", "localhost,mongo-node3"]
     volumes:
       - "mongo3_data:/data/db"
       - "mongo3_config:/data/configdb"
+    networks:
+      web:
+
+  mongosetup:
+    image: mongo:7.0
+    depends_on:
+      - mongo-node1
+      - mongo-node2
+      - mongo-node3
+    volumes:
+      - ./db:/db
+    restart: "no"
+    entrypoint: [ "bash", "/db/mongo_setup.sh" ]
+    networks:
+      web:
+
+
+networks:
+  web:
+    driver: bridge
 
 volumes:
   mongo1_data:

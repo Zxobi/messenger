@@ -24,6 +24,15 @@ tasks:
       - go build -o ./bin/user.exe ./server/cmd/user
       - go build -o ./bin/chat.exe ./server/cmd/chat
       - go build -o ./bin/frontend.exe ./server/cmd/frontend
+  build-server-image:
+    aliases:
+      - buildimg
+    desc: "Build server images"
+    cmds:
+      - docker build -f ./deploy/apps/user/Dockerfile -t user .
+      - docker build -f ./deploy/apps/chat/Dockerfile -t chat .
+      - docker build -f ./deploy/apps/auth/Dockerfile -t auth .
+      - docker build -f ./deploy/apps/frontend/Dockerfile -t frontend .
   build-cli:
     desc: "Build cli bins"
     cmds:
