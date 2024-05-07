@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"github.com/dvid-messanger/internal/app/frontend/grpc"
 	"github.com/dvid-messanger/internal/app/frontend/http"
-	"github.com/dvid-messanger/internal/client/auth"
-	"github.com/dvid-messanger/internal/client/chat"
-	"github.com/dvid-messanger/internal/client/user"
-	"github.com/dvid-messanger/internal/lib/jwt"
-	"github.com/dvid-messanger/internal/server/frontend/ws"
-	"github.com/dvid-messanger/internal/server/frontend/ws/handler"
-	fe "github.com/dvid-messanger/internal/service/frontend"
+	"github.com/dvid-messanger/internal/core/service/frontend"
+	"github.com/dvid-messanger/internal/driver/primary/server/frontend/ws"
+	"github.com/dvid-messanger/internal/driver/primary/server/frontend/ws/handler"
+	"github.com/dvid-messanger/internal/driver/secondary/client/auth"
+	"github.com/dvid-messanger/internal/driver/secondary/client/chat"
+	"github.com/dvid-messanger/internal/driver/secondary/client/user"
+	"github.com/dvid-messanger/internal/pkg/jwt"
 	"log/slog"
 	"sync"
 	"time"
@@ -82,7 +82,7 @@ func New(
 	}
 
 	verifier := jwt.NewTokenizer(secret)
-	registry := fe.NewClientRegistry(log)
+	registry := frontend.NewClientRegistry(log)
 
 	wsHandler := handler.NewHandler(log, userClient, authClient, chatClient, verifier, registry)
 	wsServer := ws.NewWsServer(
@@ -100,7 +100,7 @@ func New(
 
 	httpApp := http.New(log, wsServer, wsPort, wsPath)
 
-	notifier := fe.NewNotifier(log, registry, registry)
+	notifier := frontend.NewNotifier(log, registry, registry)
 	grpcApp := grpc.New(log, notifier, grpcPort)
 
 	return &App{

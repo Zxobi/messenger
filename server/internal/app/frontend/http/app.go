@@ -3,7 +3,7 @@ package http
 import (
 	"context"
 	"fmt"
-	"github.com/dvid-messanger/internal/server/frontend/ws"
+	"github.com/dvid-messanger/internal/driver/primary/server/frontend/ws"
 	"github.com/gorilla/mux"
 	"log/slog"
 	"net"

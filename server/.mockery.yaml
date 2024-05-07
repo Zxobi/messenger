@@ -1,13 +1,13 @@
 with-expecter: true
 outpkg: "mock_{{.PackageName}}"
-dir: "mocks/mock_{{.PackageName}}"
+dir: "test/mocks/mock_{{.PackageName}}"
 packages:
-  github.com/dvid-messanger/internal/service/auth:
+  github.com/dvid-messanger/internal/core/service/auth:
     config:
       all: true
-  github.com/dvid-messanger/internal/service/user:
+  github.com/dvid-messanger/internal/core/service/user:
     config:
       all: true
-  github.com/dvid-messanger/internal/service/chat:
+  github.com/dvid-messanger/internal/core/service/chat:
     config:
       all: true

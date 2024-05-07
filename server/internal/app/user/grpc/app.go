@@ -2,7 +2,7 @@ package grpc
 
 import (
 	"fmt"
-	usergrpc "github.com/dvid-messanger/internal/server/user"
+	"github.com/dvid-messanger/internal/driver/primary/server/user"
 	"google.golang.org/grpc"
 	"log/slog"
 	"net"
@@ -14,9 +14,9 @@ type App struct {
 	port       int
 }
 
-func New(log *slog.Logger, user usergrpc.User, port int) *App {
+func New(log *slog.Logger, handler user.User, port int) *App {
 	gRpcServer := grpc.NewServer()
-	usergrpc.Register(gRpcServer, user)
+	user.Register(gRpcServer, handler)
 
 	return &App{
 		log:        log,

@@ -2,7 +2,7 @@ package grpc
 
 import (
 	"fmt"
-	grpcauth "github.com/dvid-messanger/internal/server/auth"
+	"github.com/dvid-messanger/internal/driver/primary/server/auth"
 	"google.golang.org/grpc"
 	"log/slog"
 	"net"
@@ -14,9 +14,9 @@ type App struct {
 	port       int
 }
 
-func New(log *slog.Logger, auth grpcauth.Auth, port int) *App {
+func New(log *slog.Logger, handler auth.Auth, port int) *App {
 	gRpcServer := grpc.NewServer()
-	grpcauth.Register(gRpcServer, auth)
+	auth.Register(gRpcServer, handler)
 
 	return &App{
 		log:        log,

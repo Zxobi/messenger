@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"encoding/base64"
 	"fmt"
-	"github.com/dvid-messanger/internal/lib/cutils"
+	"github.com/dvid-messanger/internal/pkg/cutils"
 	frontendv1 "github.com/dvid-messanger/protos/gen/frontend"
 	protocolv1 "github.com/dvid-messanger/protos/gen/protocol"
 	"github.com/golang/protobuf/proto"

@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/dvid-messanger/internal/app/user"
 	"github.com/dvid-messanger/internal/config"
-	"github.com/dvid-messanger/internal/lib/logger"
+	"github.com/dvid-messanger/internal/pkg/logger"
 	"log/slog"
 	"os"
 	"os/signal"
