@@ -33,9 +33,15 @@ func New(
 ) (*App, error) {
 	const op = "chat.app.New"
 
-	chatStorage := mongo.New(log, mongodb.Timeout(cfg.Storage.Timeout), mongodb.URI(cfg.Storage.ConnectUri))
+	chatStorage := mongo.New(log, mongodb.Timeout(cfg.ChatStorage.Timeout), mongodb.URI(cfg.ChatStorage.ConnectUri))
 	messageStorage := scylla.New(log)
-	if err := messageStorage.Connect(scylladb.CreateCluster(gocql.Quorum, "db_message", "scylla-node1", "scylla-node2", "scylla-node3")); err != nil {
+	if err := messageStorage.Connect(
+		scylladb.CreateCluster(
+			gocql.Quorum,
+			cfg.MessageStorage.Keyspace,
+			cfg.MessageStorage.Hosts...,
+		),
+	); err != nil {
 		log.Error("failed to connect to message storage", slog.String("op", op))
 		return nil, err
 	}

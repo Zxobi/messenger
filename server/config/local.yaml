@@ -20,9 +20,15 @@ services:
     grpc:
       port: 20202
       timeout: 10h
-    storage:
+    chat_storage:
       timeout: 1m
       connect_uri: "mongodb://mongo-node1,mongo-node2,mongo-node3/?replicaSet=rs0"
+    message_storage:
+      keyspace: "db_message"
+      hosts:
+        - scylla-node1
+        - scylla-node2
+        - scylla-node3
   frontend:
     grpc:
       port: 20202

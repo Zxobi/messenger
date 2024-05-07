@@ -39,13 +39,19 @@ type UserConfig struct {
 }
 
 type ChatConfig struct {
-	GrpcConfig `yaml:"grpc"`
-	Storage    MongoConfig `yaml:"storage"`
+	GrpcConfig     `yaml:"grpc"`
+	ChatStorage    MongoConfig  `yaml:"chat_storage"`
+	MessageStorage ScyllaConfig `yaml:"message_storage"`
 }
 
 type MongoConfig struct {
 	Timeout    time.Duration `yaml:"timeout" env-default:"1m"`
 	ConnectUri string        `yaml:"connect_uri"`
+}
+
+type ScyllaConfig struct {
+	Keyspace string   `yaml:"keyspace"`
+	Hosts    []string `yaml:"hosts"`
 }
 
 type FrontendConfig struct {

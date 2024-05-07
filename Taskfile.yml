@@ -15,37 +15,22 @@ tasks:
     desc: "Run server tests"
     cmds:
       - go test ./server/...
-  build-server:
-    aliases:
-      - build
-    desc: "Build server bins"
-    cmds:
-      - go build -o ./bin/auth.exe ./server/cmd/auth
-      - go build -o ./bin/user.exe ./server/cmd/user
-      - go build -o ./bin/chat.exe ./server/cmd/chat
-      - go build -o ./bin/frontend.exe ./server/cmd/frontend
   build-server-image:
     aliases:
-      - buildimg
+      - build
     desc: "Build server images"
     cmds:
-      - docker build -f ./deploy/apps/user/Dockerfile -t user .
-      - docker build -f ./deploy/apps/chat/Dockerfile -t chat .
-      - docker build -f ./deploy/apps/auth/Dockerfile -t auth .
-      - docker build -f ./deploy/apps/frontend/Dockerfile -t frontend .
+      - docker-compose -f ./deploy/docker-compose.yml build
+  run-server:
+    aliases:
+      - run
+    desc: "Run server"
+    cmds:
+      - docker-compose -f ./deploy/docker-compose.yml up -d
   build-cli:
     desc: "Build cli bins"
     cmds:
       - go build -o ./bin/cli.exe ./server/cmd/cli
-  run-server:
-    aliases:
-      - run
-    desc: "Run server bins"
-    cmds:
-      - Powershell.exe start ./bin/auth.exe --config="./server/config/local.yaml"
-      - Powershell.exe start ./bin/user.exe --config="./server/config/local.yaml"
-      - Powershell.exe start ./bin/chat.exe --config="./server/config/local.yaml"
-      - Powershell.exe start ./bin/frontend.exe --config="./server/config/local.yaml"
   run-cli:
     desc: "Run cli"
     cmd: Powershell.exe start ./bin/cli.exe
