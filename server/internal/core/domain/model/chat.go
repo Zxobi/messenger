@@ -1,6 +1,8 @@
 package model
 
-import "github.com/dvid-messanger/internal/pkg/cutils"
+import (
+	"github.com/dvid-messanger/pkg/cutil"
+)
 
 type ChatType int32
 
@@ -19,7 +21,7 @@ func NewPersonalChat(cid []byte, uids ...[]byte) *Chat {
 	return &Chat{
 		Id:   cid,
 		Type: CTPersonal,
-		Members: cutils.Map(uids, func(uid []byte) ChatMember {
+		Members: cutil.Map(uids, func(uid []byte) ChatMember {
 			return ChatMember{
 				Uid: uid,
 			}

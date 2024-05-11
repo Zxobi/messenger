@@ -2,7 +2,8 @@ package grpc
 
 import (
 	"fmt"
-	"github.com/dvid-messanger/internal/driver/primary/server/chat"
+	"github.com/dvid-messanger/internal/adapter/primary"
+	"github.com/dvid-messanger/internal/adapter/primary/chat"
 	"google.golang.org/grpc"
 	"log/slog"
 	"net"
@@ -14,7 +15,7 @@ type App struct {
 	port       int
 }
 
-func New(log *slog.Logger, handler chat.Chat, port int) *App {
+func New(log *slog.Logger, handler primary.Chat, port int) *App {
 	gRpcServer := grpc.NewServer()
 	chat.Register(gRpcServer, handler)
 

@@ -3,8 +3,8 @@ package auth
 import (
 	"bytes"
 	"context"
+	"github.com/dvid-messanger/internal/adapter/secondary/storage/auth"
 	"github.com/dvid-messanger/internal/core/domain/model"
-	"github.com/dvid-messanger/internal/driver/secondary/storage/auth"
 	"github.com/dvid-messanger/test/mocks/mock_auth"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

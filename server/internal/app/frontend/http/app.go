@@ -3,7 +3,7 @@ package http
 import (
 	"context"
 	"fmt"
-	"github.com/dvid-messanger/internal/driver/primary/server/frontend/ws"
+	"github.com/dvid-messanger/internal/adapter/primary/frontend/ws"
 	"github.com/gorilla/mux"
 	"log/slog"
 	"net"
@@ -15,13 +15,13 @@ type App struct {
 	log        *slog.Logger
 	port       int
 	wsPath     string
-	wsServer   *ws.WsServer
+	wsServer   *ws.Server
 	httpServer *http.Server
 }
 
 func New(
 	log *slog.Logger,
-	wsServer *ws.WsServer,
+	wsServer *ws.Server,
 	port int,
 	wsPath string,
 ) *App {

@@ -5,17 +5,17 @@ package auth;
 option go_package = "github.com/dvid-messanger/protos/gen/auth;authv1";
 
 service AuthService {
-  rpc Register (RegisterRequest) returns (RegisterResponse);
+  rpc Create (CreateRequest) returns (CreateResponse);
   rpc Login (LoginRequest) returns (LoginResponse);
 }
 
-message RegisterRequest {
+message CreateRequest {
   bytes uid = 1;
   string email = 2;
   string password = 3;
 }
 
-message RegisterResponse {
+message CreateResponse {
   bytes uid = 1;
 }
 

@@ -2,10 +2,10 @@ package user
 
 import (
 	"context"
+	"github.com/dvid-messanger/internal/adapter/secondary/storage/user/mongo"
 	"github.com/dvid-messanger/internal/app/user/grpc"
 	"github.com/dvid-messanger/internal/config"
 	"github.com/dvid-messanger/internal/core/service/user"
-	"github.com/dvid-messanger/internal/driver/secondary/storage/user/mongo"
 	"github.com/dvid-messanger/internal/pkg/logger"
 	"github.com/dvid-messanger/pkg/database/mongodb"
 	"log/slog"

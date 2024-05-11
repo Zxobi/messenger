@@ -2,7 +2,7 @@ package converter
 
 import (
 	"github.com/dvid-messanger/internal/core/domain/model"
-	"github.com/dvid-messanger/internal/pkg/cutils"
+	"github.com/dvid-messanger/pkg/cutil"
 	protocolv1 "github.com/dvid-messanger/protos/gen/protocol"
 )
 
@@ -23,13 +23,13 @@ func UserFromDTO(usr *protocolv1.User) *model.User {
 }
 
 func UsersToDTO(users []model.User) []*protocolv1.User {
-	return cutils.Map(users, func(usr model.User) *protocolv1.User {
+	return cutil.Map(users, func(usr model.User) *protocolv1.User {
 		return UserToDTO(&usr)
 	})
 }
 
 func UsersFromDTO(users []*protocolv1.User) []model.User {
-	return cutils.Map(users, func(usr *protocolv1.User) model.User {
+	return cutil.Map(users, func(usr *protocolv1.User) model.User {
 		return *UserFromDTO(usr)
 	})
 }

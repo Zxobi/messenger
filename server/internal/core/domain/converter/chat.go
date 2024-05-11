@@ -2,7 +2,7 @@ package converter
 
 import (
 	"github.com/dvid-messanger/internal/core/domain/model"
-	"github.com/dvid-messanger/internal/pkg/cutils"
+	"github.com/dvid-messanger/pkg/cutil"
 	protocolv1 "github.com/dvid-messanger/protos/gen/protocol"
 )
 
@@ -76,13 +76,13 @@ func ChatMessageFromDTO(c *protocolv1.ChatMessage) *model.ChatMessage {
 }
 
 func ChatMessagesToDTO(c []model.ChatMessage) []*protocolv1.ChatMessage {
-	return cutils.Map(c, func(msg model.ChatMessage) *protocolv1.ChatMessage {
+	return cutil.Map(c, func(msg model.ChatMessage) *protocolv1.ChatMessage {
 		return ChatMessageToDTO(&msg)
 	})
 }
 
 func ChatMessagesFromDTO(c []*protocolv1.ChatMessage) []model.ChatMessage {
-	return cutils.Map(c, func(msg *protocolv1.ChatMessage) model.ChatMessage {
+	return cutil.Map(c, func(msg *protocolv1.ChatMessage) model.ChatMessage {
 		return *ChatMessageFromDTO(msg)
 	})
 }

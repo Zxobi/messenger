@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/dvid-messanger/internal/adapter/secondary/storage/chat"
 	"github.com/dvid-messanger/internal/core/domain/model"
-	"github.com/dvid-messanger/internal/driver/secondary/storage/chat"
-	"github.com/dvid-messanger/internal/pkg/cutils"
 	"github.com/dvid-messanger/internal/pkg/logger"
+	"github.com/dvid-messanger/pkg/cutil"
 	"log/slog"
 )
 
@@ -140,7 +140,7 @@ func (s *ChatService) UserChats(ctx context.Context, uid []byte) ([]model.Chat, 
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
-	cids := cutils.Map(userChats.Chats, func(userChat model.UserChat) []byte {
+	cids := cutil.Map(userChats.Chats, func(userChat model.UserChat) []byte {
 		return userChat.Cid
 	})
 	chats, err := s.cp.Chats(ctx, cids)

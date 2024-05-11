@@ -2,7 +2,8 @@ package grpc
 
 import (
 	"fmt"
-	grpcfe "github.com/dvid-messanger/internal/driver/primary/server/frontend/grpc"
+	"github.com/dvid-messanger/internal/adapter/primary"
+	grpcfe "github.com/dvid-messanger/internal/adapter/primary/frontend/grpc"
 	"google.golang.org/grpc"
 	"log/slog"
 	"net"
@@ -14,7 +15,7 @@ type App struct {
 	port       int
 }
 
-func New(log *slog.Logger, handler grpcfe.Notifier, port int) *App {
+func New(log *slog.Logger, handler primary.Notifier, port int) *App {
 	gRpcServer := grpc.NewServer()
 	grpcfe.Register(gRpcServer, handler)
 

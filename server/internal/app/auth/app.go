@@ -2,10 +2,10 @@ package auth
 
 import (
 	"context"
+	"github.com/dvid-messanger/internal/adapter/secondary/storage/auth/mongo"
 	"github.com/dvid-messanger/internal/app/auth/grpc"
 	"github.com/dvid-messanger/internal/config"
 	"github.com/dvid-messanger/internal/core/service/auth"
-	"github.com/dvid-messanger/internal/driver/secondary/storage/auth/mongo"
 	"github.com/dvid-messanger/internal/pkg/jwt"
 	"github.com/dvid-messanger/internal/pkg/logger"
 	"github.com/dvid-messanger/pkg/database/mongodb"

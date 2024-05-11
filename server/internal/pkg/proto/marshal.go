@@ -8,7 +8,7 @@ import (
 )
 
 func Unmarshal[T proto.Message](msg []byte, base T) error {
-	const op = "frontend.Unmarshal"
+	const op = "proto.Unmarshal"
 
 	if err := proto.Unmarshal(msg, base); err != nil {
 		return fmt.Errorf("%s: %w", op, err)
@@ -17,7 +17,7 @@ func Unmarshal[T proto.Message](msg []byte, base T) error {
 }
 
 func MarshalDownstream[T proto.Message](msg T, msgType frontendv1.DownstreamType, dErr *frontendv1.DownstreamError) ([]byte, error) {
-	const op = "frontend.MarshalDownstream"
+	const op = "proto.MarshalDownstream"
 
 	downstream := &frontendv1.Downstream{Type: msgType, Error: dErr}
 

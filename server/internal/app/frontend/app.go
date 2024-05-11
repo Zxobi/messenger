@@ -3,14 +3,16 @@ package frontend
 import (
 	"context"
 	"fmt"
+	"github.com/dvid-messanger/internal/adapter/primary/frontend/ws"
+	"github.com/dvid-messanger/internal/adapter/primary/frontend/ws/route"
+	"github.com/dvid-messanger/internal/adapter/primary/frontend/ws/route/handler"
+	"github.com/dvid-messanger/internal/adapter/primary/frontend/ws/route/middleware"
+	"github.com/dvid-messanger/internal/adapter/secondary/client/auth"
+	"github.com/dvid-messanger/internal/adapter/secondary/client/chat"
+	"github.com/dvid-messanger/internal/adapter/secondary/client/user"
 	"github.com/dvid-messanger/internal/app/frontend/grpc"
 	"github.com/dvid-messanger/internal/app/frontend/http"
 	"github.com/dvid-messanger/internal/core/service/frontend"
-	"github.com/dvid-messanger/internal/driver/primary/server/frontend/ws"
-	"github.com/dvid-messanger/internal/driver/primary/server/frontend/ws/handler"
-	"github.com/dvid-messanger/internal/driver/secondary/client/auth"
-	"github.com/dvid-messanger/internal/driver/secondary/client/chat"
-	"github.com/dvid-messanger/internal/driver/secondary/client/user"
 	"github.com/dvid-messanger/internal/pkg/jwt"
 	"log/slog"
 	"sync"
@@ -48,7 +50,7 @@ func New(
 ) (*App, error) {
 	const op = "frontend.New"
 
-	userClient, err := user.New(
+	_, err := user.New(
 		context.TODO(),
 		log,
 		userClientAddr,
@@ -59,7 +61,7 @@ func New(
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
-	authClient, err := auth.New(
+	_, err = auth.New(
 		context.TODO(),
 		log,
 		authClientAddr,
@@ -84,11 +86,14 @@ func New(
 	verifier := jwt.NewTokenizer(secret)
 	registry := frontend.NewClientRegistry(log)
 
-	wsHandler := handler.NewHandler(log, userClient, authClient, chatClient, verifier, registry)
+	router := route.NewRouter(log)
+	authMw := middleware.NewAuthMiddleware(log, registry, verifier)
+	handler.RegisterChatHandler(log, router, chatClient, authMw)
+
 	wsServer := ws.NewWsServer(
 		log,
-		wsHandler,
-		wsHandler,
+		registry,
+		router,
 		sendBuffSize,
 		rBuffSize,
 		wBuffSize,

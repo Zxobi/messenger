@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"encoding/base64"
 	"fmt"
-	"github.com/dvid-messanger/internal/pkg/cutils"
+	"github.com/dvid-messanger/pkg/cutil"
 	frontendv1 "github.com/dvid-messanger/protos/gen/frontend"
 	protocolv1 "github.com/dvid-messanger/protos/gen/protocol"
 	"github.com/golang/protobuf/proto"
@@ -217,7 +217,7 @@ func printDownstream(b []byte) {
 	case frontendv1.DownstreamType_D_GET_USERS:
 		payload := &frontendv1.DownstreamGetUsers{}
 		proto.Unmarshal(downstream.Payload, payload)
-		fmt.Println("users: " + strings.Join(cutils.Map(payload.GetUsers(), func(user *protocolv1.User) string {
+		fmt.Println("users: " + strings.Join(cutil.Map(payload.GetUsers(), func(user *protocolv1.User) string {
 			return userString(user)
 		}), " "))
 	case frontendv1.DownstreamType_D_CUR_USER:
@@ -227,7 +227,7 @@ func printDownstream(b []byte) {
 	case frontendv1.DownstreamType_D_GET_USER_CHATS:
 		payload := &frontendv1.DownstreamGetUserChats{}
 		proto.Unmarshal(downstream.Payload, payload)
-		fmt.Println("chats: " + strings.Join(cutils.Map(payload.Chats, func(chat *protocolv1.Chat) string {
+		fmt.Println("chats: " + strings.Join(cutil.Map(payload.Chats, func(chat *protocolv1.Chat) string {
 			return base64.StdEncoding.EncodeToString(chat.GetId())
 		}), " "))
 

@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/dvid-messanger/internal/adapter/secondary/storage/user"
 	"github.com/dvid-messanger/internal/core/domain/model"
-	"github.com/dvid-messanger/internal/driver/secondary/storage/user"
 	"github.com/dvid-messanger/internal/pkg/logger"
 	"log/slog"
 )
