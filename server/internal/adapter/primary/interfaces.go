@@ -43,7 +43,9 @@ type Client interface {
 
 type ClientRegistry interface {
 	Register(client Client) error
-	SetAuth(id []byte, auth string, user *model.User, chats []model.Chat) error
-	Auth(id []byte) (string, error)
-	Unregister(id []byte) error
+	SetAuth(clientId []byte, auth string) error
+	UnsetAuth(clientId []byte) error
+	Auth(clientId []byte) (string, error)
+	SetInfo(clientId []byte, user *model.User, chats []model.Chat) error
+	Unregister(clientId []byte) error
 }

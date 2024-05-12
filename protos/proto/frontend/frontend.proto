@@ -10,6 +10,9 @@ enum DownstreamType {
   D_ECHO = 0;
 
   D_LOGIN = 10;
+  D_LOGOUT = 11;
+
+  D_INFO_INIT = 12;
 
   D_GET_USER = 20;
   D_GET_USERS = 21;
@@ -29,6 +32,9 @@ enum UpstreamType {
   U_ECHO = 0;
 
   U_LOGIN = 10;
+  U_LOGOUT = 11;
+
+  U_INFO_INIT = 12;
 
   U_GET_USER = 20;
   U_GET_USERS = 21;
@@ -59,6 +65,7 @@ enum ErrorCode {
   INTERNAL = 1;
   TIMEOUT = 2;
   UNAUTHORIZED = 3;
+  BAD_LOGIN = 10;
 }
 
 message DownstreamError {
@@ -157,4 +164,21 @@ message UpstreamChatMessages {
 
 message DownstreamChatMessages {
   repeated protocol.ChatMessage messages = 1;
+}
+
+message UpstreamGetInfo {
+}
+
+message UpstreamLogout {
+}
+
+message DownstreamLogout {
+}
+
+message UpstreamInfoInit {
+}
+
+message DownstreamInfoInit {
+  protocol.User user = 1;
+  repeated protocol.Chat chats = 2;
 }

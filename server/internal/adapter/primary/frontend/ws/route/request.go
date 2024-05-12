@@ -36,26 +36,24 @@ var ErrResponseUnauthorized = &UpstreamResponse{
 func MarshalResponse(response *UpstreamResponse, dt frontendv1.DownstreamType) ([]byte, error) {
 	const op = "request.MakeResponse"
 
-	var payload []byte
-	var dErr frontendv1.DownstreamError
-	if response.ErrCode == 0 {
-		if response.Payload != nil {
-			marshalled, err := proto.Marshal(response.Payload)
-			if err != nil {
-				return nil, err
-			}
-			payload = marshalled
-		}
-		return nil, nil
-	} else {
-		dErr.Code = response.ErrCode
-		dErr.Desc = response.ErrDesc
-	}
-
 	downstream := &frontendv1.Downstream{
-		Type:    dt,
-		Payload: payload,
-		Error:   &dErr,
+		Type: dt,
+	}
+	if response.ErrCode == 0 {
+		if response.Payload == nil {
+			return nil, nil
+		}
+
+		marshalled, err := proto.Marshal(response.Payload)
+		if err != nil {
+			return nil, err
+		}
+		downstream.Payload = marshalled
+	} else {
+		downstream.Error = &frontendv1.DownstreamError{
+			Code: response.ErrCode,
+			Desc: response.ErrDesc,
+		}
 	}
 
 	res, err := proto.Marshal(downstream)

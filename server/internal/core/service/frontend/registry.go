@@ -19,6 +19,8 @@ var (
 	ErrClientNotAuthorized     = errors.New("client not authorized")
 	ErrClientAlreadyAuthorized = errors.New("client already authorized")
 
+	ErrClientAlreadyMappedToUser = errors.New("client already mapped to user")
+
 	ErrChatAlreadyRegistered = errors.New("chat already registered")
 )
 
@@ -75,11 +77,11 @@ func (cr *ClientRegistry) Register(client primary.Client) error {
 	return nil
 }
 
-func (cr *ClientRegistry) SetAuth(clientId []byte, auth string, user *model.User, chats []model.Chat) error {
+func (cr *ClientRegistry) SetAuth(clientId []byte, auth string) error {
 	const op = "registry.SetAuth"
 	log := cr.log.With(slog.String("op", op), slog.String("c", id.String(clientId)))
 
-	log.Debug("setting auth for user " + id.String(user.Id))
+	log.Debug("setting auth")
 
 	cr.mu.Lock()
 	defer cr.mu.Unlock()
@@ -95,12 +97,9 @@ func (cr *ClientRegistry) SetAuth(clientId []byte, auth string, user *model.User
 	}
 
 	clientClaims.claims[claimAuth] = auth
-	cr.clientUser[id.Id(clientId)] = user
-	for _, chat := range chats {
-		cr.chatClients[id.Id(chat.Id)] = append(cr.chatClients[id.Id(chat.Id)], clientClaims.client)
-	}
 
-	log.Debug("authorized as " + id.String(user.Id))
+	log.Debug("auth set")
+
 	return nil
 }
 
@@ -125,6 +124,57 @@ func (cr *ClientRegistry) Auth(clientId []byte) (string, error) {
 	return auth.(string), nil
 }
 
+func (cr *ClientRegistry) UnsetAuth(clientId []byte) error {
+	const op = "registry.UnsetAuth"
+	log := cr.log.With(slog.String("op", op), slog.String("c", id.String(clientId)))
+
+	log.Debug("unsetting auth")
+
+	cr.mu.Lock()
+	defer cr.mu.Unlock()
+	clientClaims, ok := cr.clients[id.Id(clientId)]
+	if !ok {
+		return fmt.Errorf("%s: %w", op, ErrClientNotRegistered)
+	}
+	_, ok = clientClaims.claims[claimAuth]
+	if !ok {
+		return fmt.Errorf("%s: %w", op, ErrClientNotAuthorized)
+	}
+
+	delete(clientClaims.claims, claimAuth)
+	cr.removeClientInfo(clientId)
+
+	log.Debug("auth unset")
+	return nil
+}
+
+func (cr *ClientRegistry) SetInfo(clientId []byte, user *model.User, chats []model.Chat) error {
+	const op = "registry.SetInfo"
+	log := cr.log.With(slog.String("op", op), slog.String("c", id.String(clientId)))
+
+	log.Debug("setting info for uid " + id.String(user.Id))
+
+	cr.mu.Lock()
+	defer cr.mu.Unlock()
+
+	clientClaims, ok := cr.clients[id.Id(clientId)]
+	if !ok {
+		return fmt.Errorf("%s: %w", op, ErrClientNotRegistered)
+	}
+	_, ok = cr.clientUser[id.Id(clientId)]
+	if ok {
+		return fmt.Errorf("%s: %w", op, ErrClientAlreadyMappedToUser)
+	}
+
+	cr.clientUser[id.Id(clientId)] = user
+	for _, chat := range chats {
+		cr.chatClients[id.Id(chat.Id)] = append(cr.chatClients[id.Id(chat.Id)], clientClaims.client)
+	}
+
+	log.Debug("client mapped to uid " + id.String(user.Id))
+	return nil
+}
+
 func (cr *ClientRegistry) Unregister(clientId []byte) error {
 	const op = "registry.Unregister"
 	log := cr.log.With(slog.String("op", op), slog.String("c", id.String(clientId)))
@@ -140,18 +190,7 @@ func (cr *ClientRegistry) Unregister(clientId []byte) error {
 	}
 
 	delete(cr.clients, id.Id(clientId))
-	delete(cr.clientUser, id.Id(clientId))
-	for cid, clients := range cr.chatClients {
-		idx := slices.IndexFunc(clients, func(client Client) bool {
-			return bytes.Equal(client.GetId(), clientId)
-		})
-		if idx == -1 {
-			continue
-		}
-
-		clients[idx] = clients[len(clients)-1]
-		cr.chatClients[cid] = clients[:len(clients)-1]
-	}
+	cr.removeClientInfo(clientId)
 
 	log.Debug("unregistered")
 
@@ -200,4 +239,19 @@ func (cr *ClientRegistry) RegisterChat(chat *model.Chat) error {
 	log.Debug("registered new chat for " + strconv.Itoa(len(clients)) + " clients")
 
 	return nil
+}
+
+func (cr *ClientRegistry) removeClientInfo(clientId []byte) {
+	delete(cr.clientUser, id.Id(clientId))
+	for cid, clients := range cr.chatClients {
+		idx := slices.IndexFunc(clients, func(chatClient Client) bool {
+			return bytes.Equal(chatClient.GetId(), clientId)
+		})
+		if idx == -1 {
+			continue
+		}
+
+		clients[idx] = clients[len(clients)-1]
+		cr.chatClients[cid] = clients[:len(clients)-1]
+	}
 }

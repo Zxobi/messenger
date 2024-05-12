@@ -50,7 +50,7 @@ func New(
 ) (*App, error) {
 	const op = "frontend.New"
 
-	_, err := user.New(
+	userClient, err := user.New(
 		context.TODO(),
 		log,
 		userClientAddr,
@@ -61,7 +61,7 @@ func New(
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
-	_, err = auth.New(
+	authClient, err := auth.New(
 		context.TODO(),
 		log,
 		authClientAddr,
@@ -88,7 +88,11 @@ func New(
 
 	router := route.NewRouter(log)
 	authMw := middleware.NewAuthMiddleware(log, registry, verifier)
+	handler.RegisterSystemHandler(log, router)
 	handler.RegisterChatHandler(log, router, chatClient, authMw)
+	handler.RegisterAuthHandler(log, router, registry, authClient, authMw)
+	handler.RegisterUserHandler(log, router, userClient, authClient, authMw)
+	handler.RegisterInfoHandler(log, router, registry, chatClient, userClient, authMw)
 
 	wsServer := ws.NewWsServer(
 		log,
