@@ -28,11 +28,6 @@ type ClientConfig struct {
 	pingPeriod   time.Duration
 }
 
-type Registrar interface {
-	Register(c *Client)
-	Unregister(c *Client)
-}
-
 type MsgHandler interface {
 	Handle(c *Client, msg []byte)
 }
